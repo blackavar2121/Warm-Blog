@@ -33,18 +33,18 @@
     "elsewhere": [
       {
         "label": "Bluesky",
-        "handle": "@bricolage",
-        "url": "https://bsky.app/"
+        "handle": "@blackavar",
+        "url": "https://bsky.app/profile/blackavar.bsky.social"
       },
       {
         "label": "Mastodon",
-        "handle": "@bricolage@mas.to",
-        "url": "https://mas.to/"
+        "handle": "@Blackavar@twit.social",
+        "url": "https://twitt.social"
       },
       {
         "label": "Flickr",
-        "handle": "bricolage21",
-        "url": "https://flickr.com/"
+        "handle": "blackavar21",
+        "url": "https://www.flickr.com/photos/blackavar21/"
       },
       {
         "label": "RSS",
