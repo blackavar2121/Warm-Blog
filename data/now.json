@@ -1,0 +1,23 @@
+{
+  "reading": {
+    "title": "Hardcore Zen",
+    "author": "Brad Warner",
+    "cover": "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=500&q=80",
+    "note": "Punk rock, monsters, and the truth about reality. Started on a flight; grinning by page 40.",
+    "started": "Feb 22",
+    "progress": 38
+  },
+  "playing": {
+    "title": "Absolum",
+    "platform": "Switch",
+    "tag": "Rouge-lite",
+    "hours": 14,
+    "art": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=900&q=80",
+    "steam": "https://store.steampowered.com/app/1689720/",
+    "note": "Roguelite brawler, two-player. We are bad at it and having a wonderful time."
+  },
+  "activity": {
+    "title": "Pigeons",
+    "meta": "always pigeons"
+  }
+}

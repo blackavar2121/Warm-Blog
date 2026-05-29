@@ -1,6 +1,6 @@
 <footer class="mfoot">
   <span>{{ .Site.Title }}</span> · <a href="{{ "archive/" | relURL }}">Archive</a> · <a href="{{ "feed.xml" | relURL }}">RSS</a>
-  {{ with .Site.Params.now.activity.title }} · {{ . }}{{ end }}
+  {{ $now := .Site.Data.now | default .Site.Params.now }}{{ with $now }}{{ with .activity.title }} · {{ . }}{{ end }}{{ end }}
 </footer>
 
 <script src="{{ "js/theme.js" | relURL }}"></script>

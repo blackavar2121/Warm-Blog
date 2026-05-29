@@ -3,6 +3,7 @@
 {{- $accents := dict "photos" "var(--c-photo)" "books" "var(--c-book)" "games" "var(--c-video)" "pigeons" "var(--c-link)" -}}
 {{- $accent := index $accents $term | default "var(--terra)" -}}
 {{- $count := len .Pages -}}
+{{- $now := .Site.Data.now | default .Site.Params.now -}}
 
 <div class="cat-wrap" style="--accent:{{ $accent }}">
   <div class="cat-head">
@@ -37,9 +38,9 @@
 
   {{/* ---------------- BOOKS ---------------- */}}
   {{ else if eq $term "books" }}
-    {{ with .Site.Params.now.reading }}
+    {{ with $now.reading }}
     <div class="now-hero book">
-      {{ with .cover }}<img src="{{ . }}" alt="{{ $.Site.Params.now.reading.title }}">{{ end }}
+      {{ with .cover }}<img src="{{ . }}" alt="{{ $.Site.Data.now.reading.title | default $.Site.Params.now.reading.title }}">{{ end }}
       <div>
         <span class="nh-kicker">Now Reading</span>
         <div class="nh-title">{{ .title }}</div>
@@ -75,9 +76,9 @@
 
   {{/* ---------------- GAMES ---------------- */}}
   {{ else if eq $term "games" }}
-    {{ with .Site.Params.now.playing }}
+    {{ with $now.playing }}
     <div class="now-hero game">
-      {{ with .art }}<img class="nh-art" src="{{ . }}" alt="{{ $.Site.Params.now.playing.title }}">{{ end }}
+      {{ with .art }}<img class="nh-art" src="{{ . }}" alt="{{ $.Site.Data.now.playing.title | default $.Site.Params.now.playing.title }}">{{ end }}
       <div class="nh-body">
         <span class="nh-kicker">Now Playing</span>
         <div class="nh-title">{{ .title }}</div>
@@ -106,21 +107,23 @@
       {{ end }}
     </div>
 
-  {{/* ---------------- PIGEONS ---------------- */}}
+  {{/* ---------------- PIGEONS — same gallery layout as Photos ---------------- */}}
   {{ else if eq $term "pigeons" }}
-    <div class="pigeon-grid">
+    <div class="gallery">
       {{ range .Pages }}
-        {{ $pigeonTitle := .Title }}
-        {{ $img := index (.Params.photos | default .Params.images) 0 }}
-        {{- $pigeonSrc := printf "%v" $img -}}{{- if isset $img "url" -}}{{- $pigeonSrc = $img.url -}}{{- end -}}
-        <div class="pigeon-card">
-          {{ with $img }}<img src="{{ $pigeonSrc }}" alt="{{ $pigeonTitle | default "Pigeon" }}" loading="lazy">{{ end }}
-          <div class="pc-cap">{{ .Title | default (truncate 60 (.Content | plainify)) }}</div>
-          <div class="pc-meta">{{ with .Params.location }}<span>{{ . }}</span>{{ end }}<span>{{ .Date.Format "Jan 2" }}</span></div>
-        </div>
+        {{ $pg := . }}
+        {{ range (.Params.photos | default .Params.images) }}
+          {{- $src := printf "%v" . -}}{{- if isset . "url" -}}{{- $src = .url -}}{{- end -}}
+          <figure>
+            <img src="{{ $src }}" alt="{{ $pg.Title | default `Pigeon` }}" loading="lazy">
+            <figcaption>
+              <span class="gc-cap">{{ $pg.Title | default (truncate 42 ($pg.Content | plainify)) }}</span>
+              <span class="gc-date">{{ with $pg.Params.location }}{{ . }} · {{ end }}{{ $pg.Date.Format "Jan 2" }}</span>
+            </figcaption>
+          </figure>
+        {{ end }}
       {{ end }}
     </div>
-    <p class="pigeon-note">No pigeons were inconvenienced in the making of this archive. Several inconvenienced me.</p>
 
   {{/* ---------------- DEFAULT (any other category) ---------------- */}}
   {{ else }}

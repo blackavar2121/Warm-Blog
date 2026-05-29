@@ -1,12 +1,12 @@
-{{/* The sticky "Now" panel. Reads everything from site params
-     (config.json → params), so editing config updates the homepage
-     and the Books/Games category heroes from one place. */}}
+{{/* The sticky "Now" panel. Reads from data/now.json (written by now-updater.py),
+     falling back to config.json → params.now so the theme works out of the box. */}}
+{{- $now := .Site.Data.now | default .Site.Params.now -}}
 <aside class="now">
   {{ with .Site.Params.about }}
   <div class="now-block"><p class="now-about">{{ . }}</p></div>
   {{ end }}
 
-  {{ with .Site.Params.now }}
+  {{ with $now }}
   <div class="now-block">
     <div class="now-title">Now</div>
     {{ with .reading }}
@@ -18,7 +18,7 @@
     {{ end }}
     {{ with .playing }}
     <div class="now-row">
-      <span class="now-label">Playing</span>
+      <span class="now-label">Games</span>
       <span class="now-value">{{ .title }}</span>
       <span class="now-meta">{{ .platform }}{{ with .tag }} · {{ . }}{{ end }}</span>
     </div>
