@@ -108,10 +108,11 @@
   {{ else if eq $term "pigeons" }}
     <div class="pigeon-grid">
       {{ range .Pages }}
+        {{ $pigeonTitle := .Title }}
         {{ $img := index (.Params.photos | default .Params.images) 0 }}
         {{- $pigeonSrc := printf "%v" $img -}}{{- if isset $img "url" -}}{{- $pigeonSrc = $img.url -}}{{- end -}}
         <div class="pigeon-card">
-          {{ with $img }}<img src="{{ $pigeonSrc }}" alt="{{ .Title | default `Pigeon` }}" loading="lazy">{{ end }}
+          {{ with $img }}<img src="{{ $pigeonSrc }}" alt="{{ $pigeonTitle | default "Pigeon" }}" loading="lazy">{{ end }}
           <div class="pc-cap">{{ .Title | default (truncate 60 (.Content | plainify)) }}</div>
           <div class="pc-meta">{{ with .Params.location }}<span>{{ . }}</span>{{ end }}<span>{{ .Date.Format "Jan 2" }}</span></div>
         </div>
