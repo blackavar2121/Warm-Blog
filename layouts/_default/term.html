@@ -1,6 +1,7 @@
 {{ define "main" }}
 {{- $term := lower (cond (ne .Data.Term "") .Data.Term .Title) -}}
-{{- $accents := dict "photos" "var(--c-photo)" "books" "var(--c-book)" "games" "var(--c-video)" "pigeons" "var(--c-link)" -}}
+{{- $isGames := or (eq $term "games") (eq $term "video-games") -}}
+{{- $accents := dict "photos" "var(--c-photo)" "books" "var(--c-book)" "games" "var(--c-video)" "video-games" "var(--c-video)" "pigeons" "var(--c-link)" -}}
 {{- $accent := index $accents $term | default "var(--terra)" -}}
 {{- $count := len .Pages -}}
 {{- $now := .Site.Data.now | default .Site.Params.now -}}
@@ -11,7 +12,7 @@
     <span class="cat-count">
       {{- if eq $term "photos" }}{{ $count }} frames
       {{- else if eq $term "books" }}{{ $count }} read
-      {{- else if eq $term "games" }}{{ $count }} logged
+      {{- else if $isGames }}{{ $count }} logged
       {{- else if eq $term "pigeons" }}{{ $count }} documented
       {{- else }}{{ $count }} posts{{ end -}}
     </span>
@@ -75,7 +76,7 @@
     </div>
 
   {{/* ---------------- GAMES ---------------- */}}
-  {{ else if eq $term "games" }}
+  {{ else if $isGames }}
     {{ with $now.playing }}
     <div class="now-hero game">
       {{ with .art }}<img class="nh-art" src="{{ . }}" alt="{{ $.Site.Data.now.playing.title | default $.Site.Params.now.playing.title }}">{{ end }}
