@@ -11,10 +11,10 @@
     "title": "Absolum",
     "platform": "Switch",
     "tag": "Rouge-lite",
-    "hours": 14,
     "art": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=900&q=80",
     "steam": "https://store.steampowered.com/app/1689720/",
-    "note": "Roguelite brawler, two-player. We are bad at it and having a wonderful time."
+    "note": "Roguelite brawler, two-player. We are bad at it and having a wonderful time.",
+    "hours": 14
   },
   "activity": {
     "title": "Pigeons",
