@@ -1,0 +1,10 @@
+{
+  "$schema": "https://micro.blog//schema/plugin.json",
+  "name": "Bricolage",
+  "version": "1.0.0",
+  "description": "A warm, editorial notebook theme — a single typed stream with a sticky Now panel, plus bespoke Photos / Books / Games / Pigeons category pages. Light + dark.",
+  "author": "Bricolage",
+  "license": "MIT",
+  "is_theme": true,
+  "is_plugin": false
+}

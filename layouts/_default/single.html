@@ -1,0 +1,29 @@
+{{ define "main" }}
+{{- $type := "note" -}}
+{{- if .Params.externalurl -}}{{ $type = "link" -}}
+{{- else if (or .Params.photos .Params.images) -}}{{ $type = "photo" -}}
+{{- else if .Title -}}{{ $type = "essay" -}}
+{{- end -}}
+<article class="single h-entry">
+  <div class="kicker post {{ $type }}" style="border:none;padding:0;margin-bottom:14px">
+    {{ $labels := dict "essay" "Essay" "note" "Note" "link" "Link" "photo" "Photo" }}
+    <span class="klabel">{{ index $labels $type }}</span>
+    <span class="kmeta"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "January 2, 2006" }} · {{ .Date.Format "3:04 PM" }}</time></span>
+  </div>
+
+  {{ if and .Title (eq $type "link") }}
+    <h1 class="post-title p-name"><a href="{{ .Params.externalurl }}">{{ .Title }}</a></h1>
+    <a class="link-domain" href="{{ .Params.externalurl }}">{{ partial "icons.html" (dict "name" "ext") }} {{ (urls.Parse .Params.externalurl).Host }}</a>
+  {{ else }}
+    {{ with .Title }}<h1 class="post-title p-name">{{ . }}</h1>{{ end }}
+  {{ end }}
+
+  <div class="e-content">{{ .Content }}</div>
+
+  {{ with .Params.categories }}
+  <div class="single-cats">
+    {{ range . }}<a href="{{ (printf "/categories/%s/" (. | urlize)) | relURL }}">{{ . }}</a>{{ end }}
+  </div>
+  {{ end }}
+</article>
+{{ end }}

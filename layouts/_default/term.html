@@ -1,0 +1,129 @@
+{{ define "main" }}
+{{- $term := lower (cond (ne .Data.Term "") .Data.Term .Title) -}}
+{{- $accents := dict "photos" "var(--c-photo)" "books" "var(--c-book)" "games" "var(--c-video)" "pigeons" "var(--c-link)" -}}
+{{- $accent := index $accents $term | default "var(--terra)" -}}
+{{- $count := len .Pages -}}
+
+<div class="cat-wrap" style="--accent:{{ $accent }}">
+  <div class="cat-head">
+    <h1>{{ cond (ne .Data.Term "") (.Data.Term | title) .Title }}</h1>
+    <span class="cat-count">
+      {{- if eq $term "photos" }}{{ $count }} frames
+      {{- else if eq $term "books" }}{{ $count }} read
+      {{- else if eq $term "games" }}{{ $count }} logged
+      {{- else if eq $term "pigeons" }}{{ $count }} documented
+      {{- else }}{{ $count }} posts{{ end -}}
+    </span>
+    {{ with .Content }}<span class="cat-blurb">{{ . | plainify }}</span>{{ end }}
+  </div>
+
+  {{/* ---------------- PHOTOS ---------------- */}}
+  {{ if eq $term "photos" }}
+    <div class="gallery">
+      {{ range .Pages }}
+        {{ $pg := . }}
+        {{ range (.Params.photos | default .Params.images) }}
+          {{- $src := printf "%v" . -}}{{- if isset . "url" -}}{{- $src = .url -}}{{- end -}}
+          <figure>
+            <img src="{{ $src }}" alt="{{ $pg.Title | default `Photo` }}" loading="lazy">
+            <figcaption>
+              <span class="gc-cap">{{ $pg.Title | default (truncate 42 ($pg.Content | plainify)) }}</span>
+              <span class="gc-date">{{ $pg.Date.Format "Jan 2" }}</span>
+            </figcaption>
+          </figure>
+        {{ end }}
+      {{ end }}
+    </div>
+
+  {{/* ---------------- BOOKS ---------------- */}}
+  {{ else if eq $term "books" }}
+    {{ with .Site.Params.now.reading }}
+    <div class="now-hero book">
+      {{ with .cover }}<img src="{{ . }}" alt="{{ $.Site.Params.now.reading.title }}">{{ end }}
+      <div>
+        <span class="nh-kicker">Now Reading</span>
+        <div class="nh-title">{{ .title }}</div>
+        <div class="nh-meta">{{ .author }}{{ with .started }} · started {{ . }}{{ end }}</div>
+        {{ with .note }}<p class="nh-note">{{ . }}</p>{{ end }}
+        {{ with .progress }}
+        <div class="nh-bar">
+          <div class="nh-bar-track"><div class="nh-bar-fill" style="width:{{ . }}%"></div></div>
+          <div class="nh-bar-label">{{ . }}% through</div>
+        </div>
+        {{ end }}
+      </div>
+    </div>
+    {{ end }}
+    <p class="sec-label">The shelf</p>
+    <div class="shelf">
+      {{ range .Pages }}
+        {{ $st := lower (.Params.status | default "finished") }}
+        {{ $bookTitle := .Title }}
+        <div class="shelf-item">
+          {{ with (.Params.cover | default (index (.Params.photos | default .Params.images) 0)) }}<img src="{{ . }}" alt="{{ $bookTitle }}" loading="lazy">{{ end }}
+          <div class="bt">{{ .Title }}</div>
+          {{ with .Params.author }}<div class="ba">{{ . }}</div>{{ end }}
+          <div class="bs {{ if eq $st "reading" }}read{{ else if in (slice "abandoned" "dropped" "dnf") $st }}drop{{ else }}done{{ end }}">
+            <span class="bs-dot"></span>{{ .Params.status | default "Finished" }}
+            {{ with .Params.rating }}<span class="stars">{{ $r := int . }}{{ range seq 5 }}{{ if le . $r }}★{{ else }}☆{{ end }}{{ end }}</span>{{ end }}
+          </div>
+        </div>
+      {{ end }}
+    </div>
+
+  {{/* ---------------- GAMES ---------------- */}}
+  {{ else if eq $term "games" }}
+    {{ with .Site.Params.now.playing }}
+    <div class="now-hero game">
+      {{ with .art }}<img class="nh-art" src="{{ . }}" alt="{{ $.Site.Params.now.playing.title }}">{{ end }}
+      <div class="nh-body">
+        <span class="nh-kicker">Now Playing</span>
+        <div class="nh-title">{{ .title }}</div>
+        <div class="nh-meta">{{ .platform }}{{ with .tag }} · {{ . }}{{ end }}{{ with .hours }} · {{ . }}h in{{ end }}</div>
+        {{ with .note }}<p class="nh-note">{{ . }}</p>{{ end }}
+        {{ with .steam }}<a class="steam-link" href="{{ . }}" rel="noopener">{{ partial "icons.html" (dict "name" "ext") }} View on Steam</a>{{ end }}
+      </div>
+    </div>
+    {{ end }}
+    <p class="sec-label">The backlog</p>
+    <div class="library">
+      {{ range .Pages }}
+        {{ $st := lower (.Params.status | default "beaten") }}
+        {{ $gameTitle := .Title }}
+        <div class="game-row">
+          <div class="gr-main">
+            <div class="gr-title">{{ with .Params.steam }}<a href="{{ . }}" rel="noopener">{{ $gameTitle }}</a>{{ else }}{{ $gameTitle }}{{ end }}</div>
+            {{ with .Content }}<div class="gr-note">{{ . | plainify | truncate 90 }}</div>{{ end }}
+          </div>
+          <div class="gr-side">
+            {{ with .Params.steam }}<a class="gr-steam" href="{{ . }}" rel="noopener" aria-label="View on Steam">{{ partial "icons.html" (dict "name" "ext") }}</a>{{ end }}
+            {{ with .Params.platform }}<span class="gr-plat">{{ . }}</span>{{ end }}
+            <span class="gr-status {{ if eq $st "shelved" }}shelved{{ else if in (slice "endless" "playing") $st }}endless{{ else }}beaten{{ end }}"><span class="gr-dot"></span>{{ .Params.status | default "Beaten" }}</span>
+          </div>
+        </div>
+      {{ end }}
+    </div>
+
+  {{/* ---------------- PIGEONS ---------------- */}}
+  {{ else if eq $term "pigeons" }}
+    <div class="pigeon-grid">
+      {{ range .Pages }}
+        {{ $img := index (.Params.photos | default .Params.images) 0 }}
+        {{- $pigeonSrc := printf "%v" $img -}}{{- if isset $img "url" -}}{{- $pigeonSrc = $img.url -}}{{- end -}}
+        <div class="pigeon-card">
+          {{ with $img }}<img src="{{ $pigeonSrc }}" alt="{{ .Title | default `Pigeon` }}" loading="lazy">{{ end }}
+          <div class="pc-cap">{{ .Title | default (truncate 60 (.Content | plainify)) }}</div>
+          <div class="pc-meta">{{ with .Params.location }}<span>{{ . }}</span>{{ end }}<span>{{ .Date.Format "Jan 2" }}</span></div>
+        </div>
+      {{ end }}
+    </div>
+    <p class="pigeon-note">No pigeons were inconvenienced in the making of this archive. Several inconvenienced me.</p>
+
+  {{/* ---------------- DEFAULT (any other category) ---------------- */}}
+  {{ else }}
+    <div class="feed">
+      {{ range .Pages }}{{ partial "stream-item.html" . }}{{ end }}
+    </div>
+  {{ end }}
+</div>
+{{ end }}

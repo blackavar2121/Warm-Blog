@@ -1,0 +1,21 @@
+{{ define "main" }}
+<div class="cat-wrap">
+  <div class="cat-head">
+    <h1>Archive</h1>
+    <span class="cat-count">{{ len .Site.RegularPages }} posts</span>
+  </div>
+  {{ range .Site.RegularPages.GroupByDate "2006" }}
+    <h2 class="arc-year">{{ .Key }}</h2>
+    <ul class="arc-list">
+      {{ range .Pages }}
+        <li>
+          <a href="{{ .Permalink }}">
+            <span class="arc-date">{{ .Date.Format "Jan 2" }}</span>
+            <span class="arc-title">{{ .Title | default (truncate 70 (.Content | plainify)) }}</span>
+          </a>
+        </li>
+      {{ end }}
+    </ul>
+  {{ end }}
+</div>
+{{ end }}

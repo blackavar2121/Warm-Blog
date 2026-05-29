@@ -1,0 +1,33 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{ . }} — {{ end }}{{ .Site.Title }}{{ end }}</title>
+
+{{ with .Site.Params.tagline }}<meta name="description" content="{{ . }}">{{ end }}
+<meta name="theme-color" content="#f5ede0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1a1510" media="(prefers-color-scheme: dark)">
+
+{{/* Set the saved light/dark choice before paint to avoid a flash */}}
+<script>
+  (function () {
+    try {
+      var m = localStorage.getItem("bricolage-mode");
+      if (m) document.documentElement.setAttribute("data-mode", m);
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ "css/bricolage.css" | relURL }}">
+
+{{/* Micro.blog plug-in CSS hooks */}}
+{{ range .Site.Params.plugins_css }}<link rel="stylesheet" href="{{ . }}">{{ end }}
+
+{{/* User custom CSS (Micro.blog: Design → Edit CSS) — must come last */}}
+<link rel="stylesheet" href="{{ "custom.css" | relURL }}">
+
+{{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ $.Site.Title }}">{{ end }}
+{{ with .Site.Params.author.username }}<link rel="me" href="https://micro.blog/{{ . }}">{{ end }}
+{{ range .Site.Params.plugins_html }}{{ partial (printf "%s" .) $ }}{{ end }}

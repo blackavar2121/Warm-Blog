@@ -1,0 +1,44 @@
+{{/* The sticky "Now" panel. Reads everything from site params
+     (config.json → params), so editing config updates the homepage
+     and the Books/Games category heroes from one place. */}}
+<aside class="now">
+  {{ with .Site.Params.about }}
+  <div class="now-block"><p class="now-about">{{ . }}</p></div>
+  {{ end }}
+
+  {{ with .Site.Params.now }}
+  <div class="now-block">
+    <div class="now-title">Now</div>
+    {{ with .reading }}
+    <div class="now-row">
+      <span class="now-label">Reading</span>
+      <span class="now-value">{{ .title }}</span>
+      {{ with .author }}<span class="now-meta">{{ . }}</span>{{ end }}
+    </div>
+    {{ end }}
+    {{ with .playing }}
+    <div class="now-row">
+      <span class="now-label">Playing</span>
+      <span class="now-value">{{ .title }}</span>
+      <span class="now-meta">{{ .platform }}{{ with .tag }} · {{ . }}{{ end }}</span>
+    </div>
+    {{ end }}
+    {{ with .activity }}
+    <div class="now-row">
+      <span class="now-label">Lately</span>
+      <span class="now-value">{{ .title }}</span>
+      {{ with .meta }}<span class="now-meta">{{ . }}</span>{{ end }}
+    </div>
+    {{ end }}
+  </div>
+  {{ end }}
+
+  {{ with .Site.Params.elsewhere }}
+  <div class="now-block">
+    <div class="now-title">Elsewhere</div>
+    <div class="now-links">
+      {{ range . }}<a href="{{ .url }}">{{ .label }} <span class="lh">{{ .handle }}</span></a>{{ end }}
+    </div>
+  </div>
+  {{ end }}
+</aside>

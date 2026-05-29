@@ -1,0 +1,10 @@
+name = "Bricolage"
+license = "MIT"
+description = "A warm, editorial notebook theme for Micro.blog — a single typed stream (links, photos, books, videos, notes, essays) with a sticky Now panel, plus bespoke category pages for Photos, Books, Games and Pigeons. Field-notebook serif, hybrid material palette, solid terra-cotta strip, light + dark."
+homepage = "https://bricolage.micro.blog/"
+tags = ["personal", "blog", "microblog", "photos", "dark mode", "serif", "warm"]
+features = ["responsive", "dark mode", "categories", "now panel"]
+min_version = "0.91.0"
+
+[author]
+  name = "Bricolage"

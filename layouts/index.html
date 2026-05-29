@@ -1,0 +1,23 @@
+{{ define "main" }}
+{{ $posts := where .Site.RegularPages "Type" "post" }}
+{{ $paginator := .Paginate $posts }}
+<div class="mbody h-feed">
+  <div class="feed">
+    {{ range $paginator.Pages }}
+      {{ partial "stream-item.html" . }}
+    {{ end }}
+
+    {{ if gt $paginator.TotalPages 1 }}
+    <nav class="pager">
+      {{ if $paginator.HasPrev }}<a href="{{ $paginator.Prev.URL }}">{{ partial "icons.html" (dict "name" "arrow" "class" "flip") }} Newer</a>{{ else }}<span></span>{{ end }}
+      <span class="pager-count">{{ $paginator.PageNumber }} / {{ $paginator.TotalPages }}</span>
+      {{ if $paginator.HasNext }}<a href="{{ $paginator.Next.URL }}">Older {{ partial "icons.html" (dict "name" "arrow") }}</a>{{ else }}<span></span>{{ end }}
+    </nav>
+    {{ else }}
+    <div class="feed-end">older posts</div>
+    {{ end }}
+  </div>
+
+  {{ partial "now.html" . }}
+</div>
+{{ end }}

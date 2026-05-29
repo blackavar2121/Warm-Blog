@@ -1,0 +1,14 @@
+<footer class="mfoot">
+  <span>{{ .Site.Title }}</span> · <a href="{{ "archive/" | relURL }}">Archive</a> · <a href="{{ "feed.xml" | relURL }}">RSS</a>
+  {{ with .Site.Params.now.activity.title }} · {{ . }}{{ end }}
+</footer>
+
+<script src="{{ "js/theme.js" | relURL }}"></script>
+
+{{/* Micro.blog plug-in JS hooks */}}
+{{ range .Site.Params.plugins_js }}<script src="{{ . }}"></script>{{ end }}
+
+{{/* Replies shown as a conversation on post pages (Design → Include conversation) */}}
+{{ if and .Site.Params.include_conversation .IsPage }}
+<script type="text/javascript" src="https://micro.blog/conversation.js?url={{ .Permalink }}"></script>
+{{ end }}

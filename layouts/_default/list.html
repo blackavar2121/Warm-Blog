@@ -1,0 +1,33 @@
+{{ define "main" }}
+<div class="cat-wrap">
+  <div class="cat-head">
+    <h1>{{ .Title }}</h1>
+    <span class="cat-count">{{ len .Pages }} posts</span>
+    {{ with .Content }}<span class="cat-blurb">{{ . | plainify }}</span>{{ end }}
+  </div>
+
+  {{ if eq .Kind "taxonomy" }}
+    {{/* /categories/ — index of all categories */}}
+    <div class="cat-list">
+      {{ range .Pages }}
+        <a href="{{ .RelPermalink }}">{{ .Title }} <span>{{ len .Pages }}</span></a>
+      {{ end }}
+    </div>
+  {{ else }}
+    {{/* Archive / section list — grouped by year */}}
+    {{ range .Pages.GroupByDate "2006" }}
+      <h2 class="arc-year">{{ .Key }}</h2>
+      <ul class="arc-list">
+        {{ range .Pages }}
+          <li>
+            <a href="{{ .Permalink }}">
+              <span class="arc-date">{{ .Date.Format "Jan 2" }}</span>
+              <span class="arc-title">{{ .Title | default (truncate 70 (.Content | plainify)) }}</span>
+            </a>
+          </li>
+        {{ end }}
+      </ul>
+    {{ end }}
+  {{ end }}
+</div>
+{{ end }}

@@ -1,0 +1,51 @@
+{{/* One stream item, typed. Mirrors the prototype's per-type cards.
+     Type is inferred from Micro.blog front matter + content:
+       externalurl  → link
+       book param   → book   (a post in the Books category)
+       photos/images→ photo
+       youtube/vimeo→ video
+       has title    → essay  (longform)
+       otherwise    → note   (micropost)            */}}
+{{- $type := "note" -}}
+{{- if .Params.externalurl -}}{{ $type = "link" -}}
+{{- else if .Params.book -}}{{ $type = "book" -}}
+{{- else if (or .Params.photos .Params.images) -}}{{ $type = "photo" -}}
+{{- else if findRE "(?i)(youtube\\.com|youtu\\.be|vimeo\\.com)" .Content -}}{{ $type = "video" -}}
+{{- else if .Title -}}{{ $type = "essay" -}}
+{{- end -}}
+{{- $labels := dict "essay" "Essay" "note" "Note" "link" "Link" "photo" "Photo" "video" "Watch" "book" "Reading" -}}
+
+<article class="post {{ $type }} h-entry">
+  <div class="kicker">
+    <span class="klabel">{{ index $labels $type }}</span>
+    <a class="kmeta u-url" href="{{ .Permalink }}">
+      <time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "Jan 2" }} · {{ .Date.Format "3:04 PM" }}</time>
+    </a>
+  </div>
+
+  {{- if eq $type "essay" -}}
+    <h2 class="post-title p-name"><a class="u-url" href="{{ .Permalink }}">{{ .Title }}</a></h2>
+    <div class="post-note p-summary">{{ .Summary }}</div>
+    {{ if .Truncated }}<a class="essay-more" href="{{ .Permalink }}">Read essay {{ partial "icons.html" (dict "name" "arrow") }}</a>{{ end }}
+
+  {{- else if eq $type "link" -}}
+    <h2 class="post-title p-name"><a href="{{ .Params.externalurl }}">{{ with .Title }}{{ . }}{{ else }}{{ .Params.externalurl }}{{ end }}</a></h2>
+    {{ with .Content }}<div class="post-note e-content">{{ . }}</div>{{ end }}
+    <a class="link-domain" href="{{ .Params.externalurl }}">{{ partial "icons.html" (dict "name" "ext") }} {{ (urls.Parse .Params.externalurl).Host }}</a>
+
+  {{- else if eq $type "book" -}}
+    <div class="book-row">
+      {{ with .Params.cover }}<img class="book-cover" src="{{ . }}" alt="{{ $.Title }}">{{ end }}
+      <div>
+        <h2 class="post-title p-name">{{ .Title }}</h2>
+        {{ with .Params.author }}<div class="post-note" style="margin:2px 0 8px">by {{ . }}</div>{{ end }}
+        <div class="e-content">{{ .Content }}</div>
+      </div>
+    </div>
+
+  {{- else -}}
+    {{/* note / photo / video — render the full content (e-content) */}}
+    {{ with .Title }}<h2 class="post-title p-name">{{ . }}</h2>{{ end }}
+    <div class="post-body e-content">{{ .Content }}</div>
+  {{- end -}}
+</article>

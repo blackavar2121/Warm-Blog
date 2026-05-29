@@ -1,0 +1,30 @@
+<header class="mhead">
+  <a class="mhead-brand" href="{{ .Site.BaseURL | relLangURL }}">
+    <span class="mhead-title">{{ .Site.Title }}</span>
+    {{ with .Site.Params.tagline }}<span class="mhead-tag">{{ . }}</span>{{ end }}
+  </a>
+  <div class="mhead-right">
+    <nav class="mnav">
+      {{ with .Site.Menus.main }}
+        {{ range . }}
+          <a href="{{ .URL }}"{{ if $.IsMenuCurrent "main" . }} aria-current="page"{{ end }}>{{ .Name }}</a>
+        {{ end }}
+      {{ else }}
+        {{ range .Site.Taxonomies.categories.ByCount }}
+          <a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a>
+        {{ end }}
+        <a href="{{ "archive/" | relURL }}">Archive</a>
+        <a href="{{ "about/" | relURL }}">About</a>
+      {{ end }}
+    </nav>
+
+    <button class="mtoggle" type="button" aria-label="Toggle light or dark theme" data-toggle-theme>
+      {{ partial "icons.html" (dict "name" "moon" "class" "i-moon") }}
+      {{ partial "icons.html" (dict "name" "sun" "class" "i-sun") }}
+    </button>
+
+    <button class="mham" type="button" aria-label="Menu" data-toggle-nav>
+      {{ partial "icons.html" (dict "name" "menu") }}
+    </button>
+  </div>
+</header>
