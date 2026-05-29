@@ -59,8 +59,10 @@
       {{ range .Pages }}
         {{ $st := lower (.Params.status | default "finished") }}
         {{ $bookTitle := .Title }}
+        {{- $bookCover := .Params.cover -}}
+        {{- if not $bookCover -}}{{- $ph := (.Params.photos | default .Params.images) -}}{{- if $ph -}}{{- $item := index $ph 0 -}}{{- if isset $item "url" -}}{{- $bookCover = $item.url -}}{{- else -}}{{- $bookCover = printf "%v" $item -}}{{- end -}}{{- end -}}{{- end -}}
         <div class="shelf-item">
-          {{ with (.Params.cover | default (index (.Params.photos | default .Params.images) 0)) }}<img src="{{ . }}" alt="{{ $bookTitle }}" loading="lazy">{{ end }}
+          {{ with $bookCover }}<img src="{{ . }}" alt="{{ $bookTitle }}" loading="lazy">{{ end }}
           <div class="bt">{{ .Title }}</div>
           {{ with .Params.author }}<div class="ba">{{ . }}</div>{{ end }}
           <div class="bs {{ if eq $st "reading" }}read{{ else if in (slice "abandoned" "dropped" "dnf") $st }}drop{{ else }}done{{ end }}">
