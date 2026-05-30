@@ -21,8 +21,14 @@
 
   {{/* ---------------- PHOTOS ---------------- */}}
   {{ if eq $term "photos" }}
+    {{- $photoPages := slice -}}
+    {{- range .Pages -}}
+      {{- if not (in (.Params.categories | default slice) "pigeons") -}}
+        {{- $photoPages = $photoPages | append . -}}
+      {{- end -}}
+    {{- end -}}
     <div class="gallery">
-      {{ range .Pages }}
+      {{ range $photoPages }}
         {{ $pg := . }}
         {{ range (.Params.photos | default .Params.images) }}
           {{- $src := printf "%v" . -}}{{- if isset . "url" -}}{{- $src = .url -}}{{- end -}}
