@@ -1,0 +1,16 @@
+{{/* Infers the stream type for a post from Micro.blog front matter + content.
+     Shared by stream-item.html and single.html so the two always agree.
+       externalurl  → link
+       book param   → book   (a post in the Books category)
+       photos/images→ photo
+       youtube/vimeo→ video
+       has title    → essay  (longform)
+       otherwise    → note   (micropost)            */}}
+{{- $type := "note" -}}
+{{- if .Params.externalurl -}}{{ $type = "link" -}}
+{{- else if .Params.book -}}{{ $type = "book" -}}
+{{- else if (or .Params.photos .Params.images) -}}{{ $type = "photo" -}}
+{{- else if findRE "(?i)(youtube\\.com|youtu\\.be|vimeo\\.com)" .Content -}}{{ $type = "video" -}}
+{{- else if .Title -}}{{ $type = "essay" -}}
+{{- end -}}
+{{- return $type -}}

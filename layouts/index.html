@@ -14,7 +14,7 @@
       {{ if $paginator.HasNext }}<a href="{{ $paginator.Next.URL }}">Older {{ partial "icons.html" (dict "name" "arrow") }}</a>{{ else }}<span></span>{{ end }}
     </nav>
     {{ else }}
-    <div class="feed-end">older posts</div>
+    <div class="feed-end">end of the stream</div>
     {{ end }}
   </div>
 

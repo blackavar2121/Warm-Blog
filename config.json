@@ -19,7 +19,7 @@
       "playing": {
         "title": "Absolum",
         "platform": "Switch",
-        "tag": "Rouge-lite",
+        "tag": "Rogue-lite",
         "art": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=900&q=80",
         "steam": "https://store.steampowered.com/app/1689720/",
         "note": "Roguelite brawler, two-player. We are bad at it and having a wonderful time.",
@@ -39,7 +39,7 @@
       {
         "label": "Mastodon",
         "handle": "@Blackavar@twit.social",
-        "url": "https://twitt.social"
+        "url": "https://twit.social/@Blackavar"
       },
       {
         "label": "Flickr",

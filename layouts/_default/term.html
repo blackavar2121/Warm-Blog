@@ -3,7 +3,18 @@
 {{- $isGames := or (eq $term "games") (eq $term "video-games") -}}
 {{- $accents := dict "photos" "var(--c-photo)" "books" "var(--c-book)" "games" "var(--c-video)" "video-games" "var(--c-video)" "pigeons" "var(--c-link)" -}}
 {{- $accent := index $accents $term | default "var(--terra)" -}}
-{{- $count := len .Pages -}}
+{{- $pages := .Pages -}}
+{{- if eq $term "photos" -}}
+  {{/* Pigeons get their own page — keep them out of the Photos gallery and count */}}
+  {{- $filtered := slice -}}
+  {{- range $pages -}}
+    {{- if not (in (.Params.categories | default slice) "pigeons") -}}
+      {{- $filtered = $filtered | append . -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $pages = $filtered -}}
+{{- end -}}
+{{- $count := len $pages -}}
 {{- $now := .Site.Data.now | default .Site.Params.now -}}
 
 <div class="cat-wrap" style="--accent:{{ $accent }}">
@@ -21,27 +32,7 @@
 
   {{/* ---------------- PHOTOS ---------------- */}}
   {{ if eq $term "photos" }}
-    {{- $photoPages := slice -}}
-    {{- range .Pages -}}
-      {{- if not (in (.Params.categories | default slice) "pigeons") -}}
-        {{- $photoPages = $photoPages | append . -}}
-      {{- end -}}
-    {{- end -}}
-    <div class="gallery">
-      {{ range $photoPages }}
-        {{ $pg := . }}
-        {{ range (.Params.photos | default .Params.images) }}
-          {{- $src := printf "%v" . -}}{{- if isset . "url" -}}{{- $src = .url -}}{{- end -}}
-          <figure>
-            <img src="{{ $src }}" alt="{{ $pg.Title | default `Photo` }}" loading="lazy">
-            <figcaption>
-              <span class="gc-cap">{{ $pg.Title | default (truncate 42 ($pg.Content | plainify)) }}</span>
-              <span class="gc-date">{{ $pg.Date.Format "Jan 2" }}</span>
-            </figcaption>
-          </figure>
-        {{ end }}
-      {{ end }}
-    </div>
+    {{ partial "gallery.html" $pages }}
 
   {{/* ---------------- BOOKS ---------------- */}}
   {{ else if eq $term "books" }}
@@ -116,21 +107,7 @@
 
   {{/* ---------------- PIGEONS — same gallery layout as Photos ---------------- */}}
   {{ else if eq $term "pigeons" }}
-    <div class="gallery">
-      {{ range .Pages }}
-        {{ $pg := . }}
-        {{ range (.Params.photos | default .Params.images) }}
-          {{- $src := printf "%v" . -}}{{- if isset . "url" -}}{{- $src = .url -}}{{- end -}}
-          <figure>
-            <img src="{{ $src }}" alt="{{ $pg.Title | default `Pigeon` }}" loading="lazy">
-            <figcaption>
-              <span class="gc-cap">{{ $pg.Title | default (truncate 42 ($pg.Content | plainify)) }}</span>
-              <span class="gc-date">{{ with $pg.Params.location }}{{ . }} · {{ end }}{{ $pg.Date.Format "Jan 2" }}</span>
-            </figcaption>
-          </figure>
-        {{ end }}
-      {{ end }}
-    </div>
+    {{ partial "gallery.html" .Pages }}
 
   {{/* ---------------- DEFAULT (any other category) ---------------- */}}
   {{ else }}

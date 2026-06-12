@@ -1,12 +1,9 @@
 {{ define "main" }}
-{{- $type := "note" -}}
-{{- if .Params.externalurl -}}{{ $type = "link" -}}
-{{- else if (or .Params.photos .Params.images) -}}{{ $type = "photo" -}}
-{{- else if .Title -}}{{ $type = "essay" -}}
-{{- end -}}
+{{- $type := partial "post-type.html" . -}}
+{{- $labels := dict "essay" "Essay" "note" "Note" "link" "Link" "photo" "Photo" "video" "Watch" "book" "Reading" -}}
 <article class="single h-entry">
-  <div class="kicker post {{ $type }}" style="border:none;padding:0;margin-bottom:14px">
-    {{ $labels := dict "essay" "Essay" "note" "Note" "link" "Link" "photo" "Photo" }}
+  {{ with .Site.Params.author }}<a class="p-author h-card" href="{{ $.Site.BaseURL }}" hidden>{{ .name | default $.Site.Title }}</a>{{ end }}
+  <div class="kicker post {{ $type }}">
     <span class="klabel">{{ index $labels $type }}</span>
     <span class="kmeta"><time class="dt-published" datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "January 2, 2006" }} · {{ .Date.Format "3:04 PM" }}</time></span>
   </div>
@@ -14,11 +11,20 @@
   {{ if and .Title (eq $type "link") }}
     <h1 class="post-title p-name"><a href="{{ .Params.externalurl }}">{{ .Title }}</a></h1>
     <a class="link-domain" href="{{ .Params.externalurl }}">{{ partial "icons.html" (dict "name" "ext") }} {{ (urls.Parse .Params.externalurl).Host }}</a>
+    <div class="e-content">{{ .Content }}</div>
+  {{ else if eq $type "book" }}
+    <div class="book-row">
+      {{ with .Params.cover }}<img class="book-cover" src="{{ . }}" alt="{{ $.Title }}">{{ end }}
+      <div>
+        {{ with .Title }}<h1 class="post-title p-name">{{ . }}</h1>{{ end }}
+        {{ with .Params.author }}<div class="post-note book-by">by {{ . }}</div>{{ end }}
+        <div class="e-content">{{ .Content }}</div>
+      </div>
+    </div>
   {{ else }}
     {{ with .Title }}<h1 class="post-title p-name">{{ . }}</h1>{{ end }}
+    <div class="e-content">{{ .Content }}</div>
   {{ end }}
-
-  <div class="e-content">{{ .Content }}</div>
 
   {{ with .Params.categories }}
   <div class="single-cats">

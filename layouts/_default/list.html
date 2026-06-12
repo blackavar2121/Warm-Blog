@@ -14,8 +14,8 @@
       {{ end }}
     </div>
   {{ else }}
-    {{/* Archive / section list — grouped by year */}}
-    {{ range .Pages.GroupByDate "2006" }}
+    {{/* Archive / section list — grouped by year (static pages excluded) */}}
+    {{ range (where .Pages "Type" "ne" "page").GroupByDate "2006" }}
       <h2 class="arc-year">{{ .Key }}</h2>
       <ul class="arc-list">
         {{ range .Pages }}

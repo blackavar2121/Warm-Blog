@@ -19,7 +19,8 @@
   var head = document.querySelector(".mhead");
   document.querySelectorAll("[data-toggle-nav]").forEach(function (btn) {
     btn.addEventListener("click", function () {
-      if (head) head.classList.toggle("nav-open");
+      var open = head ? head.classList.toggle("nav-open") : false;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
     });
   });
 })();

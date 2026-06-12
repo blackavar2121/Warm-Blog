@@ -2,7 +2,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ if .IsHome }}{{ .Site.Title }}{{ else }}{{ with .Title }}{{ . }} — {{ end }}{{ .Site.Title }}{{ end }}</title>
 
-{{ with .Site.Params.tagline }}<meta name="description" content="{{ . }}">{{ end }}
+{{/* Per-post summary when there is one, site tagline everywhere else */}}
+{{- $desc := .Site.Params.tagline -}}
+{{- if and .IsPage .Summary -}}{{- $desc = trim (.Summary | plainify | replaceRE `\s+` " " | truncate 200) " " -}}{{- end -}}
+{{ with $desc }}<meta name="description" content="{{ . }}">{{ end }}
 <meta name="theme-color" content="#f5ede0" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#1a1510" media="(prefers-color-scheme: dark)">
 
@@ -39,7 +42,9 @@
 <meta property="og:url" content="{{ .Permalink }}">
 {{ with .Site.Title }}<meta property="og:site_name" content="{{ . }}">{{ end }}
 {{ if .Title }}<meta property="og:title" content="{{ .Title }}">{{ else }}<meta property="og:title" content="{{ .Site.Title }}">{{ end }}
+{{ with $desc }}<meta property="og:description" content="{{ . }}">{{ end }}
 {{ with $ogImage }}<meta property="og:image" content="{{ . }}">{{ end }}
+<meta name="twitter:card" content="{{ if $ogImage }}summary_large_image{{ else }}summary{{ end }}">
 
 {{ with .OutputFormats.Get "rss" }}<link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ $.Site.Title }}">{{ end }}
 {{ with .Site.Params.author.username }}<link rel="me" href="https://micro.blog/{{ . }}">{{ end }}

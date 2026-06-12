@@ -1,0 +1,18 @@
+{{/* Masonry photo gallery. Pass a slice/collection of photo posts.
+     Used by the Photos and Pigeons category pages and the built-in
+     Micro.blog Photos page. */}}
+<div class="gallery">
+  {{ range . }}
+    {{ $pg := . }}
+    {{ range (.Params.photos | default .Params.images) }}
+      {{- $src := printf "%v" . -}}{{- if isset . "url" -}}{{- $src = .url -}}{{- end -}}
+      <figure>
+        <img src="{{ $src }}" alt="{{ $pg.Title | default `Photo` }}" loading="lazy">
+        <figcaption>
+          <span class="gc-cap">{{ $pg.Title | default (truncate 42 ($pg.Content | plainify)) }}</span>
+          <span class="gc-date">{{ with $pg.Params.location }}{{ . }} · {{ end }}{{ $pg.Date.Format "Jan 2" }}</span>
+        </figcaption>
+      </figure>
+    {{ end }}
+  {{ end }}
+</div>

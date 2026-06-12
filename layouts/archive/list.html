@@ -1,10 +1,12 @@
 {{ define "main" }}
+{{/* Posts only — keeps static pages (About, etc.) out of the archive */}}
+{{- $posts := where .Site.RegularPages "Type" "post" -}}
 <div class="cat-wrap">
   <div class="cat-head">
     <h1>Archive</h1>
-    <span class="cat-count">{{ len .Site.RegularPages }} posts</span>
+    <span class="cat-count">{{ len $posts }} posts</span>
   </div>
-  {{ range .Site.RegularPages.GroupByDate "2006" }}
+  {{ range $posts.GroupByDate "2006" }}
     <h2 class="arc-year">{{ .Key }}</h2>
     <ul class="arc-list">
       {{ range .Pages }}

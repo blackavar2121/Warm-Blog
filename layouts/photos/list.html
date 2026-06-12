@@ -1,0 +1,18 @@
+{{ define "main" }}
+{{/* Micro.blog's built-in Photos page (Pages → Photos). Same gallery as the
+     Photos category, and pigeons stay on their own page. */}}
+{{- $photoPages := slice -}}
+{{- range where .Site.RegularPages "Type" "post" -}}
+  {{- if and (or .Params.photos .Params.images) (not (in (.Params.categories | default slice) "pigeons")) -}}
+    {{- $photoPages = $photoPages | append . -}}
+  {{- end -}}
+{{- end -}}
+<div class="cat-wrap" style="--accent:var(--c-photo)">
+  <div class="cat-head">
+    <h1>{{ .Title | default "Photos" }}</h1>
+    <span class="cat-count">{{ len $photoPages }} frames</span>
+    {{ with .Content }}<span class="cat-blurb">{{ . | plainify }}</span>{{ end }}
+  </div>
+  {{ partial "gallery.html" $photoPages }}
+</div>
+{{ end }}
